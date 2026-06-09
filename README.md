@@ -1,4 +1,3 @@
-```markdown
 # Planta Interativa Automatizada (Hardware-Homem)
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen)
@@ -58,7 +57,7 @@ O projeto é dividido em três camadas que se comunicam de forma contínua:
   ```bash
   python servidor.py
 
-```
+---
 
 ### 3. Abrir a Interface Web
 
@@ -74,6 +73,3 @@ O projeto é dividido em três camadas que se comunicam de forma contínua:
 
 Este projeto foi desenvolvido para fins educacionais e de estudo sobre a relação e comunicação entre interfaces Homem-Máquina (IHM) e Internet das Coisas (IoT).
 
-```
-
----
