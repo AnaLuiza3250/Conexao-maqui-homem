@@ -6,24 +6,21 @@
     <title>Planta Interativa - Controle de Luzes</title>
     <style>
         :root {
-            /* Paleta de cores baseada na imagem enviada */
             --purple-x11: #AA1ADA;
             --hyper-magenta: #BB1DF0;
             --neon-violet: #CB4FF0;
-            --mauve-magic: #D368F0;
             --violet: #DA81EF;
-            
-            /* Cores de estado */
-            --bg-dark: #120217;
+            --bg-dark: #0b020e;
             --wall-color: #3a074d;
             --text-light: #ffffff;
+            --panel-bg: #16041c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -35,187 +32,234 @@
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            background-image: radial-gradient(circle at center, #1f0529 0%, var(--bg-dark) 70%);
         }
 
         h1 {
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-            text-align: center;
-            color: var(--violet);
+            margin-bottom: 5px;
+            font-size: 2rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(203, 79, 240, 0.5);
+            letter-spacing: 1px;
         }
 
         p {
-            margin-bottom: 25px;
-            color: #b399bc;
+            margin-bottom: 30px;
+            color: #a68ba9;
             font-size: 0.95rem;
-            text-align: center;
+            font-weight: 300;
         }
 
         /* Container da Planta */
         .planta-container {
             width: 100%;
-            max-width: 700px;
+            max-width: 750px;
             aspect-ratio: 4 / 3;
-            background-color: #1a0522;
-            border: 4px solid var(--wall-color);
-            border-radius: 12px;
+            background-color: var(--panel-bg);
+            border: 3px solid rgba(170, 26, 218, 0.3);
+            border-radius: 16px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 6px; /* Simula as paredes entre os cômodos */
-            padding: 6px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            gap: 10px;
+            padding: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(170, 26, 218, 0.1);
         }
 
         /* Estilização Geral dos Cômodos */
         .comodo {
-            background-color: #25092e; /* Apagado (Escuro) */
-            border: 2px solid transparent;
-            border-radius: 6px;
+            background-color: rgba(37, 9, 46, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             position: relative;
+            transition: border-color 0.3s, box-shadow 0.1s, background-color 0.1s;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .comodo-nome {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.5px;
+            transition: color 0.3s;
+        }
+
+        /* Indicador de Porcentagem / Status */
+        .status-luz {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #705575;
+            border: 1px solid rgba(255, 255, 255, 0.03);
             transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        /* -------------------------------------------
+           ESTILIZAÇÃO DOS SLIDERS
+        ------------------------------------------- */
+        .container-slider {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .slider-controle {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .slider-controle::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            transition: transform 0.1s;
+        }
+
+        .slider-controle::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .slider-controle::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border: none;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Botões para os cômodos ON/OFF */
+        .btn-comodo {
+            cursor: pointer;
             user-select: none;
         }
-
-        /* Nomes dos cômodos */
-        .comodo-nome {
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            color: rgba(255, 255, 255, 0.7);
-            transition: color 0.3s ease;
-        }
-
-        /* Indicador de Status (Lâmpada) */
-        .status-luz {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 3px 8px;
-            border-radius: 20px;
-            background-color: rgba(0, 0, 0, 0.4);
-            color: #888;
-            transition: all 0.3s ease;
-        }
-
-        /* Efeito de Hover */
-        .comodo:hover {
-            border-color: var(--mauve-magic);
-            transform: scale(1.01);
-        }
-
-        /* -------------------------------------------
-           CONFIGURAÇÃO DO LAYOUT (Grid Dinâmico)
-        ------------------------------------------- */
         
-        .sala {
-            grid-column: 1 / 3;
-            grid-row: 1 / 3;
+        .btn-comodo:hover {
+            border-color: rgba(211, 104, 240, 0.4);
+            background-color: rgba(37, 9, 46, 0.7);
+            transform: translateY(-2px);
         }
 
-        .cozinha {
-            grid-column: 3 / 5;
-            grid-row: 1 / 2;
+        .btn-comodo .status-luz {
+            margin-bottom: 0;
         }
 
-        .banheiro {
-            grid-column: 3 / 4;
-            grid-row: 2 / 3;
+        /* Configuração do Layout do Grid */
+        .sala { grid-column: 1 / 3; grid-row: 1 / 3; }
+        .cozinha { grid-column: 3 / 5; grid-row: 1 / 2; }
+        .banheiro { grid-column: 3 / 5; grid-row: 2 / 3; }
+        .quarto { grid-column: 1 / 5; grid-row: 3 / 4; }
+
+        /* Estados Acesos Estáticos para Cozinha e Banheiro */
+        .cozinha.aceso { 
+            background-color: var(--hyper-magenta); 
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(187, 29, 240, 0.4); 
         }
-
-        .corredor {
-            grid-column: 4 / 5;
-            grid-row: 2 / 3;
+        .banheiro.aceso { 
+            background-color: var(--violet); 
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(218, 129, 239, 0.4); 
         }
-
-        /* Dormitório agora expandido para ocupar toda a parte inferior de forma simétrica */
-        .quarto {
-            grid-column: 1 / 5;
-            grid-row: 3 / 4;
-        }
-
-
-        /* -------------------------------------------
-           ESTADOS ACESOS (Cores da sua Paleta)
-        ------------------------------------------- */
-
-        .sala.aceso {
-            background-color: var(--purple-x11);
-            box-shadow: inset 0 0 25px rgba(170, 26, 218, 0.6), 0 0 15px rgba(170, 26, 218, 0.4);
-        }
-
-        .cozinha.aceso {
-            background-color: var(--hyper-magenta);
-            box-shadow: inset 0 0 25px rgba(187, 29, 240, 0.6), 0 0 15px rgba(187, 29, 240, 0.4);
-        }
-
-        .quarto.aceso {
-            background-color: var(--neon-violet);
-            box-shadow: inset 0 0 25px rgba(203, 79, 240, 0.6), 0 0 15px rgba(203, 79, 240, 0.4);
-        }
-
-        .banheiro.aceso, .corredor.aceso {
-            background-color: var(--violet);
-            box-shadow: inset 0 0 25px rgba(218, 129, 239, 0.6), 0 0 15px rgba(218, 129, 239, 0.4);
-        }
-
-        .comodo.aceso .comodo-nome {
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
-
-        .comodo.aceso .status-luz {
-            background-color: #ffffff;
-            color: #000000;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        .comodo.aceso .comodo-nome { color: #ffffff; }
+        .cozinha.aceso .status-luz, .banheiro.aceso .status-luz { 
+            background-color: #ffffff; 
+            color: #000000; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
     <h1>Planta Interativa Automatizada</h1>
-    <p>Clique em qualquer cômodo para controlar os pinos individuais do seu Arduino.</p>
+    <p>Ajuste a intensidade dos dimmers ou ligue/desligue os interruptores.</p>
 
     <div class="planta-container">
-        <div class="comodo sala" onclick="alternarLuz(this, 'S', 's')">
+    
+        <div id="sala" class="comodo sala">
             <span class="comodo-nome">Sala de Estar</span>
-            <span class="status-luz">Apagada</span>
+            <span class="status-luz" id="pct-sala">0%</span>
+            <div class="container-slider">
+                <input type="range" min="0" max="255" value="0" class="slider-controle" oninput="atualizarInterfaceSlider('S', this.value, 'sala', 'pct-sala', 170, 26, 218)">
+            </div>
         </div>
 
-        <div class="comodo cozinha" onclick="alternarLuz(this, 'C', 'c')">
+        <div class="comodo cozinha btn-comodo" onclick="alternarLuz(this, 'C', 'c')">
             <span class="comodo-nome">Cozinha</span>
             <span class="status-luz">Apagada</span>
         </div>
 
-        <div class="comodo banheiro" onclick="alternarLuz(this, 'B', 'b')">
+        <div class="comodo banheiro btn-comodo" onclick="alternarLuz(this, 'B', 'b')">
             <span class="comodo-nome">Banheiro</span>
             <span class="status-luz">Apagada</span>
         </div>
 
-        <div class="comodo corredor" >
-            <span class="comodo-nome">Hall</span>
-            <span class="status-luz">Apagada</span>
+        <div id="quarto" class="comodo quarto">
+            <span class="comodo-nome">Dormitório</span>
+            <span class="status-luz" id="pct-quarto">0%</span>
+            <div class="container-slider">
+                <input type="range" min="0" max="255" value="0" class="slider-controle" oninput="atualizarInterfaceSlider('Q', this.value, 'quarto', 'pct-quarto', 203, 79, 240)">
+            </div>
         </div>
 
-        <div class="comodo quarto" onclick="alternarLuz(this, 'Q', 'q')">
-            <span class="comodo-nome">Dormitório</span>
-            <span class="status-luz">Apagada</span>
-        </div>
     </div>
 
     <script>
-        function enviarComandoHardware(letra) {
-            if (!letra) return;
+        const IP_REDE = "10.139.26.146"; // Seu IP de rede local
+        
+        // Controle de tempo para não inundar o Python/Arduino de requisições
+        let timersHardware = { 'S': null, 'Q': null };
 
-            // TROQUE o 192.168.X.X pelo IP que apareceu no seu ipconfig!
-            fetch(`http://192.168.56.1:8080/?comando=${letra}`)
-                .catch(erro => console.error("Servidor Python offline:", erro));
+        function enviarComandoHardware(letra, valor = "") {
+            fetch(`http://${IP_REDE}:8080/?comando=${letra}${valor}`)
+                .catch(erro => console.error("Erro ao enviar para o Python:", erro));
+        }
+
+        function atualizarInterfaceSlider(letraComodo, valor, idElemento, idTextoPct, r, g, b) {
+            // 1. ATUALIZAÇÃO VISUAL IMEDIATA NA TELA (100% Fluido)
+            const elemento = document.getElementById(idElemento);
+            const textoPct = document.getElementById(idTextoPct);
+            const porcentagem = Math.round((valor / 255) * 100);
+            
+            textoPct.innerText = `${porcentagem}%`;
+            const fatorOpacidade = valor / 255;
+
+            if(valor > 0) {
+                elemento.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${0.15 + (fatorOpacidade * 0.75)})`;
+                elemento.style.borderColor = `rgba(255, 255, 255, ${0.05 + (fatorOpacidade * 0.2)})`;
+            } else {
+                elemento.style.backgroundColor = "rgba(37, 9, 46, 0.4)";
+                elemento.style.borderColor = "rgba(255, 255, 255, 0.05)";
+            }
+
+            // 2. CONTROLE TRAVA-ENVIO (Envia apenas o último valor após parar de arrastar rápido)
+            clearTimeout(timersHardware[letraComodo]);
+            timersHardware[letraComodo] = setTimeout(() => {
+                enviarComandoHardware(letraComodo, valor);
+            }, 40); // 40 milissegundos de intervalo é o tempo perfeito para o Arduino respirar
         }
 
         function alternarLuz(comodo, letraLigar, letraDesligar) {

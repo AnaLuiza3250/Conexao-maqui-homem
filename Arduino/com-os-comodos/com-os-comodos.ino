@@ -1,8 +1,11 @@
 // Mapeamento dos pinos digitais para os LEDs
-const int pinSala = 2;
-const int pinCozinha = 7;
-const int pinDormitorio = 9;
-const int pinBanheiro = 13;
+const int pinSala = 5;
+const int pinCozinha = 4;
+const int pinDormitorio = 3;
+const int pinBanheiro = 7;
+const int pinJardim = 6;
+
+
 
 void setup() {
   // Configura a comunicação série (Baud Rate idêntico ao do HTML)
@@ -43,7 +46,7 @@ void loop() {
         digitalWrite(pinCozinha, LOW);
         break;
        
-      // --- CONTROLO DO quarto 1 ---
+      // --- CONTROLO DO DORMITORIO ---
       case 'Q':
         digitalWrite(pinDormitorio, HIGH);
         break;
