@@ -44,10 +44,32 @@
         }
 
         p {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #a68ba9;
             font-size: 0.95rem;
             font-weight: 300;
+        }
+
+        /* Botão Master Desligar Tudo */
+        .btn-master {
+            margin-bottom: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #d32f2f 0%, #9a0007 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(211, 47, 47, 0.4);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-master:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(211, 47, 47, 0.6);
         }
 
         /* Container da Planta */
@@ -90,7 +112,6 @@
             transition: color 0.3s;
         }
 
-        /* Indicador de Porcentagem / Status */
         .status-luz {
             font-size: 0.75rem;
             text-transform: uppercase;
@@ -105,9 +126,6 @@
             margin-bottom: 10px;
         }
 
-        /* -------------------------------------------
-           ESTILIZAÇÃO DOS SLIDERS
-        ------------------------------------------- */
         .container-slider {
             width: 90%;
             display: flex;
@@ -134,68 +152,48 @@
             background: #ffffff;
             cursor: pointer;
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-            transition: transform 0.1s;
         }
 
-        .slider-controle::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .slider-controle::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            border: none;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-        }
-
-        /* Botões para os cômodos ON/OFF */
-        .btn-comodo {
-            cursor: pointer;
-            user-select: none;
-        }
-        
+        .btn-comodo { cursor: pointer; user-select: none; }
         .btn-comodo:hover {
             border-color: rgba(211, 104, 240, 0.4);
             background-color: rgba(37, 9, 46, 0.7);
-            transform: translateY(-2px);
         }
 
-        .btn-comodo .status-luz {
-            margin-bottom: 0;
-        }
+        .btn-comodo .status-luz { margin-bottom: 0; }
 
-        /* Configuração do Layout do Grid */
+        /* Posicionamento do Grid */
         .sala { grid-column: 1 / 3; grid-row: 1 / 3; }
         .cozinha { grid-column: 3 / 5; grid-row: 1 / 2; }
         .banheiro { grid-column: 3 / 5; grid-row: 2 / 3; }
-        .quarto { grid-column: 1 / 5; grid-row: 3 / 4; }
+        .quarto { grid-column: 1 / 3; grid-row: 3 / 4; }
+        .jardim { grid-column: 3 / 5; grid-row: 3 / 4; }
 
-        /* Estados Acesos Estáticos para Cozinha e Banheiro */
+        /* Cozinha, Banheiro e Jardim acesos */
         .cozinha.aceso { 
             background-color: var(--hyper-magenta); 
-            border-color: rgba(255,255,255,0.2);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(187, 29, 240, 0.4); 
         }
         .banheiro.aceso { 
             background-color: var(--violet); 
-            border-color: rgba(255,255,255,0.2);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(218, 129, 239, 0.4); 
         }
-        .comodo.aceso .comodo-nome { color: #ffffff; }
-        .cozinha.aceso .status-luz, .banheiro.aceso .status-luz { 
-            background-color: #ffffff; 
-            color: #000000; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        .jardim.aceso {
+            background-color: rgba(26, 188, 156, 0.5);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2), 0 0 20px rgba(26, 188, 156, 0.5);
+            border-color: rgba(26, 188, 156, 0.8);
         }
+
+        .comodo.aceso .comodo-nome { color: #ffffff; }
+        .comodo.aceso .status-luz { background-color: #ffffff; color: #000000; }
     </style>
 </head>
 <body>
 
     <h1>Planta Interativa Automatizada</h1>
-    <p>Ajuste a intensidade dos dimmers ou ligue/desligue os interruptores.</p>
+    <p>Controle residencial centralizado na rede local</p>
+
+    <button class="btn-master" onclick="desligarTodas()">Desligar Todas as Luzes</button>
 
     <div class="planta-container">
     
@@ -203,16 +201,16 @@
             <span class="comodo-nome">Sala de Estar</span>
             <span class="status-luz" id="pct-sala">0%</span>
             <div class="container-slider">
-                <input type="range" min="0" max="255" value="0" class="slider-controle" oninput="atualizarInterfaceSlider('S', this.value, 'sala', 'pct-sala', 170, 26, 218)">
+                <input type="range" id="slider-sala" min="0" max="255" value="0" class="slider-controle" oninput="ajustarSliderPorUsuario('S', this.value, 'sala', 'pct-sala', 170, 26, 218)">
             </div>
         </div>
 
-        <div class="comodo cozinha btn-comodo" onclick="alternarLuz(this, 'C', 'c')">
+        <div id="cozinha" class="comodo cozinha btn-comodo" onclick="alternarLuz(this, 'C', 'c')">
             <span class="comodo-nome">Cozinha</span>
             <span class="status-luz">Apagada</span>
         </div>
 
-        <div class="comodo banheiro btn-comodo" onclick="alternarLuz(this, 'B', 'b')">
+        <div id="banheiro" class="comodo banheiro btn-comodo" onclick="alternarLuz(this, 'B', 'b')">
             <span class="comodo-nome">Banheiro</span>
             <span class="status-luz">Apagada</span>
         </div>
@@ -221,25 +219,41 @@
             <span class="comodo-nome">Dormitório</span>
             <span class="status-luz" id="pct-quarto">0%</span>
             <div class="container-slider">
-                <input type="range" min="0" max="255" value="0" class="slider-controle" oninput="atualizarInterfaceSlider('Q', this.value, 'quarto', 'pct-quarto', 203, 79, 240)">
+                <input type="range" id="slider-quarto" min="0" max="255" value="0" class="slider-controle" oninput="ajustarSliderPorUsuario('Q', this.value, 'quarto', 'pct-quarto', 203, 79, 240)">
             </div>
+        </div>
+
+        <div id="jardim" class="comodo jardim">
+            <span class="comodo-nome">Jardim</span>
+            <span class="status-luz" id="status-jardim">Apagado</span>
         </div>
 
     </div>
 
     <script>
-        const IP_REDE = "10.139.26.146"; // Seu IP de rede local
+        const IP_REDE = "10.139.26.80"; // Seu IP de rede local
         
-        // Controle de tempo para não inundar o Python/Arduino de requisições
         let timersHardware = { 'S': null, 'Q': null };
+        let tempoUltimoEnvio = 0; // Registra quando o usuário mexeu na tela por último
 
         function enviarComandoHardware(letra, valor = "") {
             fetch(`http://${IP_REDE}:8080/?comando=${letra}${valor}`)
-                .catch(erro => console.error("Erro ao enviar para o Python:", erro));
+                .catch(erro => console.error("Erro no comando:", erro));
         }
 
-        function atualizarInterfaceSlider(letraComodo, valor, idElemento, idTextoPct, r, g, b) {
-            // 1. ATUALIZAÇÃO VISUAL IMEDIATA NA TELA (100% Fluido)
+        // Atualiza a tela imediatamente e agenda o envio para a serial
+        function ajustarSliderPorUsuario(letraComodo, valor, idElemento, idTextoPct, r, g, b) {
+            tempoUltimoEnvio = Date.now(); // Bloqueia a sincronização externa temporariamente
+            atualizarVisualSlider(valor, idElemento, idTextoPct, r, g, b);
+
+            clearTimeout(timersHardware[letraComodo]);
+            timersHardware[letraComodo] = setTimeout(() => {
+                enviarComandoHardware(letraComodo, valor);
+            }, 40);
+        }
+
+        // Função reutilizável para pintar o fundo e mudar a porcentagem das salas
+        function atualizarVisualSlider(valor, idElemento, idTextoPct, r, g, b) {
             const elemento = document.getElementById(idElemento);
             const textoPct = document.getElementById(idTextoPct);
             const porcentagem = Math.round((valor / 255) * 100);
@@ -254,15 +268,10 @@
                 elemento.style.backgroundColor = "rgba(37, 9, 46, 0.4)";
                 elemento.style.borderColor = "rgba(255, 255, 255, 0.05)";
             }
-
-            // 2. CONTROLE TRAVA-ENVIO (Envia apenas o último valor após parar de arrastar rápido)
-            clearTimeout(timersHardware[letraComodo]);
-            timersHardware[letraComodo] = setTimeout(() => {
-                enviarComandoHardware(letraComodo, valor);
-            }, 40); // 40 milissegundos de intervalo é o tempo perfeito para o Arduino respirar
         }
 
         function alternarLuz(comodo, letraLigar, letraDesligar) {
+            tempoUltimoEnvio = Date.now();
             comodo.classList.toggle('aceso');
             const statusTxt = comodo.querySelector('.status-luz');
             
@@ -274,6 +283,70 @@
                 enviarComandoHardware(letraDesligar);
             }
         }
+
+        function desligarTodas() {
+            tempoUltimoEnvio = Date.now();
+            enviarComandoHardware('X'); // Envia o comando mestre 'X'
+            
+            // Força a interface a zerar tudo imediatamente antes do próximo ciclo de atualização
+            document.getElementById('slider-sala').value = 0;
+            document.getElementById('slider-quarto').value = 0;
+            atualizarVisualSlider(0, 'sala', 'pct-sala', 170, 26, 218);
+            atualizarVisualSlider(0, 'quarto', 'pct-quarto', 203, 79, 240);
+            
+            document.getElementById('cozinha').classList.remove('aceso');
+            document.getElementById('cozinha').querySelector('.status-luz').innerText = "Apagada";
+            document.getElementById('banheiro').classList.remove('aceso');
+            document.getElementById('banheiro').querySelector('.status-luz').innerText = "Apagada";
+        }
+
+        // --- SISTEMA INTERATIVO DE ATUALIZAÇÃO AUTOMÁTICA ---
+        function sincronizarStatusComArduino() {
+            // Se o usuário interagiu com a tela nos últimos 2,5 segundos, espera para não travar o dedo dele
+            if (Date.now() - tempoUltimoEnvio < 2500) return;
+
+            fetch(`http://${IP_REDE}:8080/status`)
+                .then(res => res.json())
+                .then(dados => {
+                    if (!dados || Object.keys(dados).length === 0) return;
+
+                    // 1. Sincroniza Sala de Estar
+                    document.getElementById('slider-sala').value = dados.S;
+                    atualizarVisualSlider(dados.S, 'sala', 'pct-sala', 170, 26, 218);
+
+                    // 2. Sincroniza Quarto
+                    document.getElementById('slider-quarto').value = dados.Q;
+                    atualizarVisualSlider(dados.Q, 'quarto', 'pct-quarto', 203, 79, 240);
+
+                    // 3. Sincroniza Cozinha
+                    const cz = document.getElementById('cozinha');
+                    if (dados.C === 1) { cz.classList.add('aceso'); cz.querySelector('.status-luz').innerText = "Acesa"; }
+                    else { cz.classList.remove('aceso'); cz.querySelector('.status-luz').innerText = "Apagada"; }
+
+                    // 4. Sincroniza Banheiro
+                    const bh = document.getElementById('banheiro');
+                    if (dados.B === 1) { bh.classList.add('aceso'); bh.querySelector('.status-luz').innerText = "Acesa"; }
+                    else { bh.classList.remove('aceso'); bh.querySelector('.status-luz').innerText = "Apagada"; }
+
+                    // 5. Sincroniza Jardim de Acordo com o LDR Físico
+                    const jd = document.getElementById('jardim');
+                    const txtJd = document.getElementById('status-jardim');
+                    if (dados.J > 0) {
+                        jd.classList.add('aceso');
+                        let pctJardim = Math.round((dados.J / 255) * 100);
+                        txtJd.innerText = `Aceso (${pctJardim}%)`;
+                    } else {
+                        jd.classList.remove('aceso');
+                        txtJd.innerText = "Apagado";
+                    }
+                })
+                .catch(err => console.log("Aguardando conexao com o servidor..."));
+        }
+
+        // Inicia o loop de sincronização perpétuo a cada 2 segundos
+        window.addEventListener('load', () => {
+            setInterval(sincronizarStatusComArduino, 2000);
+        });
     </script>
 </body>
 </html>
