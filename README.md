@@ -65,8 +65,6 @@ O ecossistema opera em um ciclo contínuo de três camadas com comunicação de 
   ```bash
   pip install pyserial
 
-
-
 * Execute o servidor:
 ```bash
 python servidor.py
