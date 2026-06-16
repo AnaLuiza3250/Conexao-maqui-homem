@@ -1,10 +1,3 @@
-Aqui está o seu arquivo `README.md` totalmente atualizado. Ajustei as tecnologias, os novos pinos, a lógica dos Sliders (PWM), o sensor LDR do Jardim e os novos comandos de comunicação bidirecional (`?` e `X`) que implementamos no código.
-
-Também corrigi a seção de inicialização para refletir o uso do servidor Python na porta `8080` (dispensando a necessidade do Apache/XAMPP para rodar o backend).
-
----
-
-
 # Planta Interativa Automatizada (Hardware-Homem)
 
 ![Status do Projeto](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen)
